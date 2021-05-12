@@ -2,49 +2,88 @@
 import random
 
 class Node(object):
+    """Node object to keep track of parent and child nodes"""
     def __init__(self, val):
-        self.val = val
-        self.left = None
-        self.right = None
+        self.val    = val
+        self.left   = None
+        self.right  = None
+        self.parent = None
+
+class BinarySearchTree(object):
+    def __init__(self):
+        self.root = None
 
     def insert(self, val):
         """Inserts the given value into the tree following BST rules"""
-        if self.val == val:
-            return
-        if self.val < val:                  #New value is higer than current node
-            if self.right == None:
-                self.right = Node(val)
-            else:
-                self.right.insert(val)
-        if self.val > val:                  #New value is lower than current node
-            if self.left == None:
-                self.left = Node(val)
-            else:
-                self.left.insert(val)
+        if self.root == None:
+            self.root = Node(val)
+        else:
+            self._insert(val, self.root)
 
-    def getDepth(self):
-        pass
+    def _insert(self, val, cur_node):
+        if cur_node.val == val:
+            return
+        #New value is higer than current node
+        if cur_node.val < val:                  
+            if cur_node.right == None:
+                cur_node.right = Node(val)
+                cur_node.right.parent = cur_node
+            else:
+                self._insert(val, cur_node.right)
+        #New value is lower than current node
+        if cur_node.val > val:                  
+            if cur_node.left == None:
+                cur_node.left = Node(val)
+                cur_node.left.parent = cur_node
+            else:
+                self._insert(val, cur_node.left)
+
+    def getMaxDepth(self):
+        if self.root == None:
+            return 0
+        else:
+            depth = self._getDepth(self.root, 0)
+            print(f'The depth of the tree is {depth}')
+
+    def _getDepth(self, cur_node, depth):
+        depth += 1
+        #No more child nodes
+        if cur_node.left == None and cur_node.right == None:        
+            return depth
+        #Only right child
+        if cur_node.left == None:                                  
+            return self._getDepth(cur_node.right, depth)
+        #Only left child
+        if cur_node.right == None:                                  
+            return self._getDepth(cur_node.left, depth)
+        #Two child nodes
+        else:
+            depth = max(self._getDepth(cur_node.right, depth), self._getDepth(cur_node.left, depth))
+
+        return depth
+
+
 
     def display(self):
         """Print the binary search tree as a tree structure"""
-        lines, *_ = self._display_aux()
+        lines, *_ = self._display_aux(self.root)
         for line in lines:
             print(line)
 
-    def _display_aux(self):
+    def _display_aux(self, cur_node):
         """Returns list of strings, width, height, and horizontal coordinate of the root."""
         # No child.
-        if self.right is None and self.left is None:
-            line = '%s' % self.val
+        if cur_node.right is None and cur_node.left is None:
+            line = '%s' % cur_node.val
             width = len(line)
             height = 1
             middle = width // 2
             return [line], width, height, middle
 
         # Only left child.
-        if self.right == None:
-            lines, n, p, x = self.left._display_aux()
-            s = '%s' % self.val
+        if cur_node.right == None:
+            lines, n, p, x = self._display_aux(cur_node.left)
+            s = '%s' % cur_node.val
             u = len(s)
             first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s
             second_line = x * ' ' + '/' + (n - x - 1 + u) * ' '
@@ -52,9 +91,9 @@ class Node(object):
             return [first_line, second_line] + shifted_lines, n + u, p + 2, n + u // 2
 
         # Only right child.
-        if self.left == None:
-            lines, n, p, x = self.right._display_aux()
-            s = '%s' % self.val
+        if cur_node.left == None:
+            lines, n, p, x = self._display_aux(cur_node.right)
+            s = '%s' % cur_node.val
             u = len(s)
             first_line = s + x * '_' + (n - x) * ' '
             second_line = (u + x) * ' ' + '\\' + (n - x - 1) * ' '
@@ -62,9 +101,9 @@ class Node(object):
             return [first_line, second_line] + shifted_lines, n + u, p + 2, u // 2
 
         # Two children.
-        left, n, p, x = self.left._display_aux()
-        right, m, q, y = self.right._display_aux()
-        s = '%s' % self.val
+        left, n, p, x = self._display_aux(cur_node.left)
+        right, m, q, y = self._display_aux(cur_node.right)
+        s = '%s' % cur_node.val
         u = len(s)
         first_line = (x + 1) * ' ' + (n - x - 1) * '_' + s + y * '_' + (m - y) * ' '
         second_line = x * ' ' + '/' + (n - x - 1 + u + y) * ' ' + '\\' + (m - y - 1) * ' '
@@ -76,19 +115,23 @@ class Node(object):
         lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
 
-
 def createTree(size,max_val):
-    root = Node(random.randint(1,max_val))          #Initialize the root node
-    values = [root.val]
-    for i in range(size-1):
+    """Returns a binary search tree object"""
+    tree = BinarySearchTree()             
+    #Keep track of values to ensure no dupes          
+    values = []                                     
+    for _ in range(size):
         dupe = True
-        while dupe:                                 #Generate unique vales for each node
-            val = random.randint(0,max_val)     
+        #Generate unique values for each node
+        while dupe:                                 
+            val = random.randint(1,max_val)     
             if val not in values:
                 values.append(val)
-                root.insert(val)
+                tree.insert(val)
                 dupe = False
-    return root
+    return tree
 
-tree = createTree(10,50)
+
+tree = createTree(50, 100)
 tree.display()
+tree.getMaxDepth()
