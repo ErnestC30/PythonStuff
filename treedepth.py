@@ -10,6 +10,7 @@ class Node(object):
         self.parent = None
 
 class BinarySearchTree(object):
+    """Binary Search Tree object to hold nodes, and contains tree methods"""
     def __init__(self):
         self.root = None
 
@@ -39,6 +40,7 @@ class BinarySearchTree(object):
                 self._insert(val, cur_node.left)
 
     def getMaxDepth(self):
+        """Prints out the maximum depth of the tree"""
         if self.root == None:
             return 0
         else:
@@ -56,11 +58,10 @@ class BinarySearchTree(object):
         #Only left child
         if cur_node.right == None:                                  
             return self._getDepth(cur_node.left, depth)
-        #Two child nodes
+        #Two child nodes. Return the higher depth value between the two branches
         else:
             depth = max(self._getDepth(cur_node.right, depth), self._getDepth(cur_node.left, depth))
-
-        return depth
+            return depth
 
 
 
@@ -132,6 +133,6 @@ def createTree(size,max_val):
     return tree
 
 
-tree = createTree(50, 100)
+tree = createTree(20, 100)
 tree.display()
 tree.getMaxDepth()
