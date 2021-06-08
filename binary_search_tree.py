@@ -63,8 +63,6 @@ class BinarySearchTree(object):
             depth = max(self._getDepth(cur_node.right, depth), self._getDepth(cur_node.left, depth))
             return depth
 
-
-
     def display(self):
         """Print the binary search tree as a tree structure"""
         lines, *_ = self._display_aux(self.root)
@@ -116,6 +114,26 @@ class BinarySearchTree(object):
         lines = [first_line, second_line] + [a + u * ' ' + b for a, b in zipped_lines]
         return lines, n + m + u, max(p, q) + 2, n + u // 2
 
+    def convertToList(self):
+        """Convert the binary search tree into a sorted list structure"""
+        treelist = self._convertToList(self.root)
+        print(f'The tree converted to list is: {treelist}')
+        return treelist
+
+    def _convertToList(self, node):
+        if node is None:
+            return []
+        return self._convertToList(node.left) + [node.val] + self._convertToList(node.right)
+
+    def rangeSum(self, low, high):
+        """Returns the sum of all values in the tree that are between the low and high value."""
+        treelist = self._convertToList(self.root)
+        return sum(num for num in treelist if num > low and num < high)
+
+
+
+    
+        
 def createTree(size,max_val):
     """Returns a binary search tree object"""
     tree = BinarySearchTree()             
@@ -133,6 +151,8 @@ def createTree(size,max_val):
     return tree
 
 
-tree = createTree(20, 100)
+tree = createTree(10, 50)
 tree.display()
-tree.getMaxDepth()
+tree.convertToList()
+print(tree.rangeSum(10,30))
+#tree.getMaxDepth()
