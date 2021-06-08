@@ -12,30 +12,14 @@ If there is no space available, return false, else park the car in that size spa
 
 class parkingSystem(object):
     def __init__(self, small, med, large):
-        self.small = small
-        self.med = med
-        self.large = large
+        self.parkSys = [small, med, large]      #Store as list, since we know carType is either 1, 2 or 3. Faster than checking if statements
+    
+    def addCar(self, carType):
+        self.parkSys[carType - 1] -= 1
+        return self.parkSys[carType - 1] >= 0
 
-    def addCar(self, type):
-        if type == 1:
-            if self.small > 0:
-                self.small -= 1
-                return True
-            else:
-                return False
-        if type == 2:
-            if self.med > 0:
-                self.med -= 1
-                return True
-            else:
-                return False
-        if type == 3:
-            if self.large > 0:
-                self.large -= 1
-                return True
-            else:
-                return False
-        
+
+
 ps = parkingSystem(2,1,0)
 print(ps.addCar(1))
 print(ps.addCar(1))
