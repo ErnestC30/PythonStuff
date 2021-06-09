@@ -125,11 +125,14 @@ class BinarySearchTree(object):
             return []
         return self._convertToList(node.left) + [node.val] + self._convertToList(node.right)
 
-    def rangeSum(self, low, high):
+    def rangeSum(self, node, low, high):
         """Returns the sum of all values in the tree that are between the low and high value."""
-        treelist = self._convertToList(self.root)
-        return sum(num for num in treelist if num > low and num < high)
-
+        if node == None: return 0
+        if node.val > high: 
+            return self.rangeSum(node.left, low, high)
+        if node.val < low: 
+            return self.rangeSum(node.right, low, high)
+        return node.val + self.rangeSum(node.left, low, high) + self.rangeSum(node.right, low, high)
 
 
     
@@ -154,5 +157,5 @@ def createTree(size,max_val):
 tree = createTree(10, 50)
 tree.display()
 tree.convertToList()
-print(tree.rangeSum(10,30))
+print(tree.rangeSum(tree.root, 10,30))
 #tree.getMaxDepth()
