@@ -5,7 +5,6 @@ Return the number of consistent strings in the array words.
 """
 
 def consistent_string(allowed, words):
-
     c_strings = 0
     for word in words:
         consistent = True
