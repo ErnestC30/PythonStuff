@@ -13,7 +13,7 @@ def largestContainer(heights):
 
     for i in range(len(heights)):
         for j in range(len(heights)):
-            width = j-i                             #Width is the index distance between the two heights.
+            width = j-i                               #Width is the index distance between the two heights.
             height = min(heights[j], heights[i])      #Height is the lower value between the two heights.
 
             area = width * height
