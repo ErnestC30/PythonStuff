@@ -1,2 +1,2 @@
 # PythonStuff
-Random python files in this folder
+Random python exercises and small projects.
